@@ -4,8 +4,11 @@ node_modules
 
 
 # local env files
-.env.local
+.env.
 .env.*.local
+.env
+.env.production
+configJordi.js
 
 # Log files
 npm-debug.log*
