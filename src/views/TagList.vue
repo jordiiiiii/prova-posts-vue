@@ -1,5 +1,5 @@
 <template>
-  <v-container class="TagPostList">
+  <v-container class="TagList">
     <h1 class="display-3 ma-4 d-flex justify-center">
       Posts with Tag "{{ tag.name }}
     </h1>
@@ -16,7 +16,7 @@ import { mapState, mapGetters } from "vuex";
 import PostListPost from "@/components/PostListPost";
 
 export default {
-  name: "TagPostList",
+  name: "TagList",
   components: {
     PostListPost
   },

@@ -72,6 +72,7 @@
 </template>
 
 <script>
+import validations from "@/utils/validations";
 // import PostEditForm from "@/components/PostEditForm";
 // import PostListPost from "@/components/PostListPost";
 
@@ -109,31 +110,7 @@ export default {
         //   "Iasddddddddddddddddddddddd asddddddddd ddddddddddddddddddld and new, for their support and confidence in our vision. Nasddddddddddddddd dddddddddddddddddd dddddddddddasd asdddddddddddddddd asddddddddddddddddddde. ",
       },
       valid: false,
-      required(propertyType) {
-        return p =>
-          (p && p.length > 0) || `The field ${propertyType} is required`;
-      },
-      minLength(propertyType, min) {
-        return p =>
-          (p && p.length >= min) ||
-          `${propertyType} must be at least ${min} characters`;
-      },
-      maxLength(propertyType, max) {
-        return p =>
-          (p && p.length <= max) ||
-          `${propertyType} must be less than ${max} characters`;
-      },
-      imageRequired() {
-        return p =>
-          (p && p.id === undefined && p.imageUrl === undefined) ||
-          "The Image is required";
-      },
-      imageSize() {
-        return value =>
-          !value ||
-          value.size < 1000000 ||
-          "Avatar size should be less than 1 MB!";
-      }
+      ...validations
     };
   },
   methods: {

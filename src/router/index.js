@@ -11,6 +11,21 @@ const routes = [
     component: Home
   },
   {
+    path: "/login",
+    name: "user-login",
+    component: () => import("@/views/UserLogin")
+  },
+  {
+    path: "/registration",
+    name: "user-registration",
+    component: () => import("@/views/UserRegistration")
+  },
+  {
+    path: "/admin/users",
+    name: "admin-user-list",
+    component: () => import("@/views/AdminUserList")
+  },
+  {
     path: "/about",
     name: "About",
     component: () => import("@/views/About")
@@ -33,12 +48,12 @@ const routes = [
   },
   {
     path: "/post/:id",
-    name: "single-post",
+    name: "post-single",
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "about" */ "@/views/SinglePost")
+      import(/* webpackChunkName: "about" */ "@/views/PostSingle")
   },
   {
     path: "/tag/new",
@@ -48,7 +63,7 @@ const routes = [
   {
     path: "/tag/:id",
     name: "tag",
-    component: () => import("@/views/TagPostList"),
+    component: () => import("@/views/TagList"),
     params: true
   }
 ];

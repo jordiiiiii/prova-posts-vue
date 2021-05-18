@@ -24,7 +24,7 @@ export default {
   methods: {
     createTag() {
       // let post = await this.$store.dispatch("createPost", this.post);
-      // this.$router.push({ name: "single-post", params: { id: post.id } });
+      // this.$router.push({ name: "post-single", params: { id: post.id } });
       this.$store.dispatch("createTag", this.tag);
     }
   }

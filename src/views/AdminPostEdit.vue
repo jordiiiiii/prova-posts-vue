@@ -67,6 +67,7 @@
 
 <script>
 import { mapState } from "vuex";
+import validations from "@/utils/validations";
 // import PostEditForm from "@/components/PostEditForm";
 
 export default {
@@ -80,26 +81,7 @@ export default {
       image: null,
       imageUrl: "",
       valid: false,
-      required(propertyType) {
-        return p =>
-          (p && p.length > 0) || `The field ${propertyType} is required`;
-      },
-      minLength(propertyType, min) {
-        return p =>
-          (p && p.length >= min) ||
-          `${propertyType} must be at least ${min} characters`;
-      },
-      maxLength(propertyType, max) {
-        return p =>
-          (p && p.length <= max) ||
-          `${propertyType} must be less than ${max} characters`;
-      },
-      imageSize() {
-        return value =>
-          !value ||
-          value.size < 1000000 ||
-          "Avatar size should be less than 1 MB!";
-      }
+      ...validations
     };
   },
   mounted() {

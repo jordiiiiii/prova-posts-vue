@@ -14,7 +14,7 @@
       <div>{{ post.title | abbreviate }}</div>
       <div>{{ post.snippet | abbreviate }}</div>
       <div class="actions">
-        <router-link :to="{ name: 'single-post', params: { id: post.id } }">
+        <router-link :to="{ name: 'post-single', params: { id: post.id } }">
           Show
         </router-link>
         <router-link :to="{ name: 'admin-post-edit', params: { id: post.id } }">

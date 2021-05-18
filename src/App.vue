@@ -31,7 +31,8 @@
     <!--        <v-icon>mdi-open-in-new</v-icon>-->
     <!--      </v-btn>-->
     <!--    </v-app-bar>-->
-    <TheHeader />
+    <TheHeader :currentUser="currentUser" />
+
     <v-main>
       <router-view />
     </v-main>
@@ -40,6 +41,7 @@
 
 <script>
 import TheHeader from "@/components/TheHeader";
+import { mapState } from "vuex";
 
 export default {
   name: "App",
@@ -49,8 +51,12 @@ export default {
   data: () => ({
     //
   }),
+  computed: {
+    ...mapState(["currentUser"])
+  },
   mounted() {
     this.$store.dispatch("loadPosts");
+    this.$store.dispatch("loadCurrentUser");
   }
 };
 </script>

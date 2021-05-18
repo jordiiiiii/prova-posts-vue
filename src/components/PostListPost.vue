@@ -3,7 +3,7 @@
     width="340px"
     hover
     class="ma-2"
-    :to="{ name: 'single-post', params: { id: post.id } }"
+    :to="{ name: 'post-single', params: { id: post.id } }"
   >
     <v-img :src="url + post.imageUrl" alt="post image" />
     <v-card-title>{{ post.title }}</v-card-title>

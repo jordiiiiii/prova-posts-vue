@@ -8,7 +8,9 @@ export default new Vuex.Store({
   state: {
     posts: [],
     tags: [],
-    readPosts: []
+    readPosts: [],
+    users: [],
+    currentUser: { userName: "joooorddddddiiiii" }
   },
   mutations: {
     SET_POSTS(state, posts) {
@@ -19,6 +21,9 @@ export default new Vuex.Store({
     },
     SET_READ_POSTS(state, readPosts) {
       state.readPosts = readPosts;
+    },
+    SET_USERS(state, users) {
+      state.users = users;
     },
     MARK_POST_READ(state, postId) {
       let readPosts = state.readPosts.concat(postId);
@@ -42,6 +47,14 @@ export default new Vuex.Store({
           p = post;
         }
       });
+    },
+    LOGOUT_USER(state) {
+      state.currentUser = {};
+      window.localStorage.currentUser = JSON.stringify({});
+    },
+    SET_CURRENT_USER(state, user) {
+      state.currentUser = user;
+      window.localStorage.currentUser = JSON.stringify(user);
     }
   },
   actions: {
@@ -73,6 +86,18 @@ export default new Vuex.Store({
     },
     markRead({ commit }, postId) {
       commit("MARK_POST_READ", postId);
+    },
+    async loadUsers({ commit }) {
+      let response = await Api().get("users");
+      let users = response.data.data;
+      commit(
+        "SET_USERS",
+        users.map(u => u.attributes)
+      );
+    },
+    async loadCurrentUser({ commit }) {
+      let user = JSON.parse(window.localStorage.currentUser);
+      commit("SET_CURRENT_USER", user);
     },
     async createPost({ commit }, { postPayload, imagePayload }) {
       try {
@@ -141,7 +166,40 @@ export default new Vuex.Store({
       } catch (err) {
         console.log(err.response.data.error);
       }
+    },
+    logoutUser({ commit }) {
+      commit("LOGOUT_USER");
+    },
+    async loginUser({ commit }, { email, password }) {
+      try {
+        let response = await Api().post("login", {
+          email,
+          password
+        });
+        let user = response.data.data.attributes;
+        commit("SET_CURRENT_USER", user);
+        return user;
+      } catch (err) {
+        return { error: err.response.data.errors };
+      }
+    },
+    async registerUser({ commit }, { userName, email, password }) {
+      try {
+        let response = await Api().post("signup", {
+          userName,
+          email,
+          password
+        });
+        let user = response.data.data.attributes;
+        commit("SET_CURRENT_USER", user);
+        return user;
+      } catch (err) {
+        return { error: err.response.data.errors };
+      }
     }
+    // loginUser({ commit }, user) {
+    //   commit("SET_CURRENT_USER", user);
+    // }
   },
   getters: {
     getTag: state => id => {

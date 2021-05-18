@@ -1,5 +1,5 @@
 <template>
-  <v-container class="SinglePost">
+  <v-container class="PostSingle">
     <v-row>
       <v-col md="6" cols="12">
         <img :src="url + post.imageUrl" alt="post image" />
@@ -34,7 +34,7 @@
 import { mapState, mapGetters } from "vuex";
 
 export default {
-  name: "SinglePost",
+  name: "PostSingle",
   data() {
     return {
       url: process.env.VUE_APP_ROOT_API
