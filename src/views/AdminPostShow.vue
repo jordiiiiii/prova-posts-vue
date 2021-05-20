@@ -27,7 +27,14 @@ export default {
   },
   computed: {
     ...mapState(["posts", "tags"]),
+    // ...mapState({
+    //   posts: state => state.posts.posts,
+    //   tags: state => state.tags.tags
+    // }),
     ...mapGetters(["getTag"]),
+    // ...mapGetters({
+    //   getTag: "getTag"
+    // }),
     post() {
       return this.posts.find(p => p.id === this.$route.params.id) || {};
     },

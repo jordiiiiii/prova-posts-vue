@@ -16,6 +16,9 @@ export default {
   name: "AdminUserList",
   computed: {
     ...mapState(["users"])
+    // ...mapState({
+    //   users: state => state.users.users
+    // })
   },
   mounted() {
     this.$store.dispatch("loadUsers");

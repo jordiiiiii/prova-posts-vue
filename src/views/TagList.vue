@@ -22,7 +22,13 @@ export default {
   },
   computed: {
     ...mapState(["posts"]),
+    // ...mapState({
+    //   posts: state => state.posts.posts
+    // }),
     ...mapGetters(["getTag"]),
+    // ...mapGetters({
+    //   getTag: "getTag"
+    // }),
     tag() {
       return this.getTag(this.$route.params.id) || {};
     },

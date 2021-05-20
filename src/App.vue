@@ -71,6 +71,10 @@ export default {
   }),
   computed: {
     ...mapState(["currentUser", "snackbars"])
+    // ...mapState({
+    //   currentUser: state => state.users.currentUser,
+    //   snackbars: state => state.shared.snackbars
+    // })
   },
   mounted() {
     this.$store.dispatch("loadPosts");

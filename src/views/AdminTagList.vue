@@ -56,6 +56,9 @@ export default {
   },
   computed: {
     ...mapState(["tags"])
+    // ...mapState({
+    //   tags: state => state.tags.tags
+    // })
   },
   methods: {
     setToEditing(tag) {

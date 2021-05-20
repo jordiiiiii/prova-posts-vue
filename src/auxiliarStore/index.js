@@ -1,21 +1,3 @@
-// import Vue from "vue";
-// import Vuex from "vuex";
-// // modules
-// import users from "./users";
-// import shared from "./shared";
-// import posts from "./posts";
-// import tags from "./tags";
-//
-// Vue.use(Vuex);
-//
-// export default new Vuex.Store({
-//   modules: {
-//     users: users,
-//     shared: shared,
-//     posts: posts,
-//     tags: tags
-//   }
-// });
 import Vue from "vue";
 import Vuex from "vuex";
 import Api from "@/services/api";

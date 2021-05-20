@@ -46,7 +46,13 @@ export default {
   },
   computed: {
     ...mapState(["currentUser"]),
+    // ...mapState({
+    //   currentUser: state => state.users.currentUser
+    // }),
     ...mapGetters(["getTag"]),
+    // ...mapGetters({
+    //   getTag: "getTag"
+    // }),
     isRead() {
       if (this.currentUser.readPostIds) {
         return this.currentUser.readPostIds.includes(this.post.id);

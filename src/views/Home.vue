@@ -26,6 +26,10 @@ export default {
   },
   computed: {
     ...mapState(["posts", "tags"])
+    // ...mapState({
+    //   posts: state => state.posts.posts,
+    //   tags: state => state.tags.tags
+    // })
   }
 };
 </script>

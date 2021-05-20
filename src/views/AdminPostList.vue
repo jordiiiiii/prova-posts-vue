@@ -36,6 +36,9 @@ export default {
   name: "AdminBlogList",
   computed: {
     ...mapState(["posts"])
+    // ...mapState({
+    //   posts: state => state.posts.posts
+    // })
   },
   filters: {
     abbreviate(text) {

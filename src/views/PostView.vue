@@ -49,7 +49,14 @@ export default {
   },
   computed: {
     ...mapState(["currentUser", "posts"]),
+    // ...mapState({
+    //   currentUser: state => state.users.currentUser,
+    //   posts: state => state.posts.posts
+    // }),
     ...mapGetters(["getTag"]),
+    // ...mapGetters({
+    //   getTag: "getTag"
+    // }),
     post() {
       return this.posts.find(p => p.id === this.$route.params.id) || {};
     },

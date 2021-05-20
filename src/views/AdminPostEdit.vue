@@ -86,6 +86,9 @@ export default {
   },
   computed: {
     ...mapState(["posts"]),
+    // ...mapState({
+    //   posts: state => state.posts.posts
+    // }),
     post() {
       return this.posts.find(p => p.id === this.$route.params.id) || {};
     }
