@@ -1,9 +1,10 @@
 <template>
   <v-container>
-    <h1>Login</h1>
+    <h1>Register</h1>
     <UserAuthForm
       :submitForm="registerUser"
       :btnText="'Register'"
+      :changeRoute="changeRoute"
       hasName="true"
     />
   </v-container>
@@ -17,24 +18,29 @@ export default {
   components: {
     UserAuthForm
   },
+  data() {
+    return {
+      changeRoute: {
+        optRoute: "user-login",
+        msgOptRoute: "Already have an account? Login."
+      }
+    };
+  },
   methods: {
+    // TODO: podria ser un try/cacth
     async registerUser(registrationInfo) {
-      let userName = registrationInfo.userName;
-      let email = registrationInfo.email;
-      let password = registrationInfo.password;
       let user = await this.$store.dispatch("registerUser", {
-        userName,
-        email,
-        password
+        userName: registrationInfo.userName,
+        email: registrationInfo.email,
+        password: registrationInfo.password
       });
-      if (user.error) {
-        alert(user.error.userName + user.error.email + user.error.password);
-      } else {
-        alert("Welcome to our Group " + user.userName);
+      if (!user.error) {
+        await this.$store.dispatch("setSnackbar", {
+          text: "Welcome to our Group " + user.userName
+        });
+        await this.$router.push({ name: "Home" });
       }
     }
   }
 };
 </script>
-
-<style scoped></style>

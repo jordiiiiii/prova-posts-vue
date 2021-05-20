@@ -84,9 +84,6 @@ export default {
       ...validations
     };
   },
-  mounted() {
-    console.log(this.post.id);
-  },
   computed: {
     ...mapState(["posts"]),
     post() {
@@ -113,16 +110,14 @@ export default {
       this.image = imageFile;
     },
     async savePost() {
-      const postPayload = this.post;
-      const imagePayload = this.image;
-      console.log(postPayload);
-      console.log(imagePayload);
-      await this.$store.dispatch("updatePost", {
-        postPayload,
-        imagePayload
+      let post = await this.$store.dispatch("updatePost", {
+        postPayload: this.post,
+        imagePayload: this.image
       });
-      await this.$router.push({ name: "Home" });
-      // await this.$router.push({ name: "admin-post-list" });
+      await this.$store.dispatch("setSnackbar", {
+        text: `You have successfully edited your post, ${post.title}.`
+      });
+      await this.$router.push({ name: "admin-post-list" });
     }
   }
 };

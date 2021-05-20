@@ -1,5 +1,5 @@
 <template>
-  <v-container class="TagCreate">
+  <v-container class="AdminTagCreate">
     <v-row>
       <v-col md="3" cols="12" class="ma-2">
         <h1>Tag Create Page</h1>
@@ -15,7 +15,7 @@
 
 <script>
 export default {
-  name: "TagCreate",
+  name: "AdminTagCreate",
   data() {
     return {
       tag: {}
@@ -24,7 +24,7 @@ export default {
   methods: {
     createTag() {
       // let post = await this.$store.dispatch("createPost", this.post);
-      // this.$router.push({ name: "post-single", params: { id: post.id } });
+      // this.$router.push({ name: "post-view", params: { id: post.id } });
       this.$store.dispatch("createTag", this.tag);
     }
   }

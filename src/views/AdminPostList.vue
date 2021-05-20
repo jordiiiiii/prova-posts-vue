@@ -1,7 +1,7 @@
 <template>
   <v-container class="AdminPostList">
     <h1>Admin Blog List</h1>
-    <v-btn text :to="{ name: 'post-create' }">
+    <v-btn text :to="{ name: 'admin-post-create' }">
       Add Post
     </v-btn>
     <div class="flex-table">
@@ -14,7 +14,10 @@
       <div>{{ post.title | abbreviate }}</div>
       <div>{{ post.snippet | abbreviate }}</div>
       <div class="actions">
-        <router-link :to="{ name: 'post-single', params: { id: post.id } }">
+        <router-link :to="{ name: 'post-view', params: { id: post.id } }">
+          Watch
+        </router-link>
+        <router-link :to="{ name: 'admin-post-show', params: { id: post.id } }">
           Show
         </router-link>
         <router-link :to="{ name: 'admin-post-edit', params: { id: post.id } }">
@@ -50,6 +53,9 @@ export default {
       let response = confirm(`Are you sure you want to delete ${post.title}?`);
       if (response) {
         this.$store.dispatch("deletePost", post);
+        this.$store.dispatch("setSnackbar", {
+          text: "You have successfully deleted the post."
+        });
       }
     }
   }

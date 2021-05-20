@@ -8,9 +8,12 @@ export default new Vuex.Store({
   state: {
     posts: [],
     tags: [],
-    readPosts: [],
+    // readPosts: [],
     users: [],
-    currentUser: { userName: "joooorddddddiiiii" }
+    currentUser: {},
+    // currentUser: null
+    error: null,
+    snackbars: []
   },
   mutations: {
     SET_POSTS(state, posts) {
@@ -20,15 +23,25 @@ export default new Vuex.Store({
       state.tags = tags;
     },
     SET_READ_POSTS(state, readPosts) {
-      state.readPosts = readPosts;
+      state.currentUser.readPostIds = readPosts;
+      // state.readPosts = readPosts;
     },
     SET_USERS(state, users) {
       state.users = users;
     },
+    SET_ERROR(state, payload) {
+      state.error = payload;
+    },
+    CLEAR_ERROR(state) {
+      state.error = null;
+    },
     MARK_POST_READ(state, postId) {
-      let readPosts = state.readPosts.concat(postId);
-      state.readPosts = readPosts;
-      window.localStorage.readPosts = JSON.stringify(readPosts);
+      state.currentUser.readPostIds = state.currentUser.readPostIds.concat(
+        postId
+      );
+      // let readPosts = state.readPosts.concat(postId);
+      // state.readPosts = readPosts;
+      // window.localStorage.readPosts = JSON.stringify(readPosts);
     },
     ADD_POST(state, post) {
       // let posts = state.posts.concat(post);
@@ -51,10 +64,28 @@ export default new Vuex.Store({
     LOGOUT_USER(state) {
       state.currentUser = {};
       window.localStorage.currentUser = JSON.stringify({});
+      // state.currentUser = null;
+      // localStorage.removeItem("currentUser");
+      //// or
+      // localStorage.removeItem("currentUser");
+      // location.reload;
     },
     SET_CURRENT_USER(state, user) {
       state.currentUser = user;
       window.localStorage.currentUser = JSON.stringify(user);
+      // state.currentUser = user;
+      // localStorage.setItem("currentUser", JSON.stringify(user));
+    },
+    SET_SNACKBAR(state, snackbar) {
+      state.snackbars = state.snackbars.concat(snackbar);
+    },
+    ADD_TAG_FROM_POST(state, { post, tag }) {
+      post.tag_ids = post.tag_ids.concat(tag.id);
+      tag.post_ids = tag.post_ids.concat(post.id);
+    },
+    REMOVE_TAG_FROM_POST(state, { post, tag }) {
+      post.tag_ids = post.tag_ids.filter(t_id => t_id !== tag.id);
+      tag.post_ids = tag.post_ids.filter(p_id => p_id !== post.id);
     }
   },
   actions: {
@@ -80,15 +111,22 @@ export default new Vuex.Store({
         "SET_TAGS",
         tags.map(t => t.attributes)
       );
-
-      let readPosts = JSON.parse(window.localStorage.readPosts);
-      commit("SET_READ_POSTS", readPosts);
     },
-    markRead({ commit }, postId) {
-      commit("MARK_POST_READ", postId);
+    async markRead({ commit, state }, postId) {
+      if (this.state.currentUser.id) {
+        try {
+          await Api().patch(`users/addReadPost/${state.currentUser.id}`, {
+            readPostIds: postId
+          });
+          commit("MARK_POST_READ", postId);
+        } catch (err) {
+          console.log(err.response.data.error);
+        }
+      }
     },
     async loadUsers({ commit }) {
       let response = await Api().get("users");
+      console.log(response);
       let users = response.data.data;
       commit(
         "SET_USERS",
@@ -98,6 +136,10 @@ export default new Vuex.Store({
     async loadCurrentUser({ commit }) {
       let user = JSON.parse(window.localStorage.currentUser);
       commit("SET_CURRENT_USER", user);
+
+      const response = await Api().get(`users/${user.id}`);
+      user = response.data.data.attributes;
+      commit("SET_READ_POSTS", user.readPostIds);
     },
     async createPost({ commit }, { postPayload, imagePayload }) {
       try {
@@ -107,26 +149,22 @@ export default new Vuex.Store({
         formData.append("body", postPayload.body);
         formData.append("creator", postPayload.creator);
         formData.append("imageUrl", imagePayload, imagePayload.name);
-        // let response = await Api().post("posts", formData);
-        let response = await Api().post("posts", formData, {
+        // const response = await Api().post("posts", formData);
+        const response = await Api().post("posts", formData, {
           headers: {
             "Content-Type": "multipart/form-data"
           }
         });
-        console.log(response);
         let savedPost = response.data.data.attributes;
         commit("ADD_POST", savedPost);
         // return savedPost;
       } catch (err) {
-        console.log("YoYoPostError");
         console.log(err.response.data.error);
       }
     },
     async createTag({ commit }, tag) {
       try {
-        console.log("YoYoTag");
-        console.log(tag);
-        let response = await Api().post("tags", tag);
+        const response = await Api().post("tags", tag);
         console.log(response);
         commit("ADD_TAG", tag);
       } catch (err) {
@@ -136,7 +174,6 @@ export default new Vuex.Store({
     async deletePost({ commit }, post) {
       // const regex = /^[2]\d{2}$/;
       try {
-        console.log(post.id);
         let response = await Api().delete(`posts/${post.id}`);
         // if (response.status === 200 || response.status === 204) {
         if (response.status >= 200 && response.status <= 299) {
@@ -171,6 +208,7 @@ export default new Vuex.Store({
       commit("LOGOUT_USER");
     },
     async loginUser({ commit }, { email, password }) {
+      commit("CLEAR_ERROR");
       try {
         let response = await Api().post("login", {
           email,
@@ -180,7 +218,10 @@ export default new Vuex.Store({
         commit("SET_CURRENT_USER", user);
         return user;
       } catch (err) {
-        return { error: err.response.data.errors };
+        let error = err.response.data.errors;
+        error = error.email ? error.email : error.password;
+        commit("SET_ERROR", error);
+        return { error: error };
       }
     },
     async registerUser({ commit }, { userName, email, password }) {
@@ -194,7 +235,48 @@ export default new Vuex.Store({
         commit("SET_CURRENT_USER", user);
         return user;
       } catch (err) {
-        return { error: err.response.data.errors };
+        let error = err.response.data.errors;
+        error = error.email
+          ? error.email
+          : error.password
+          ? error.password
+          : error.userName;
+        commit("SET_ERROR", error);
+        return { error: error };
+      }
+    },
+    clearError({ commit }) {
+      commit("CLEAR_ERROR");
+    },
+    setSnackbar({ commit }, snackbar) {
+      snackbar.showing = true;
+      snackbar.timeout = -1;
+      // snackbar.timeout = 4000;
+      snackbar.color = snackbar.color || "success lighten-1";
+      commit("SET_SNACKBAR", snackbar);
+    },
+    async addTagFromPost({ commit }, { post, tag }) {
+      try {
+        let response = await Api().patch(`posts/addTags/${post.id}`, {
+          tag: tag.id
+        });
+        let newPost = response.data.data.attributes;
+        console.log(newPost);
+        commit("ADD_TAG_FROM_POST", { post, tag });
+      } catch (err) {
+        console.log(err.response.data.error);
+      }
+    },
+    async removeTagFromPost({ commit }, { post, tag }) {
+      try {
+        let response = await Api().patch(`posts/removeTags/${post.id}`, {
+          tag: tag.id
+        });
+        let newPost = response.data.data.attributes;
+        console.log(newPost);
+        commit("REMOVE_TAG_FROM_POST", { post, tag });
+      } catch (err) {
+        console.log(err.response.data.error);
       }
     }
     // loginUser({ commit }, user) {
@@ -204,7 +286,13 @@ export default new Vuex.Store({
   getters: {
     getTag: state => id => {
       return state.tags.find(t => t.id === id);
+    },
+    error(state) {
+      return state.error;
     }
+    // loggedIn(state) {
+    //   return !!state.user;
+    // }
   },
   modules: {}
 });

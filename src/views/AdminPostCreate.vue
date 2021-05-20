@@ -1,5 +1,5 @@
 <template>
-  <v-container class="PostCreate">
+  <v-container class="AdminPostCreate">
     <v-row>
       <v-col md="6" cols="12" class="ma-2">
         <h1>Post Create Page</h1>
@@ -77,7 +77,7 @@ import validations from "@/utils/validations";
 // import PostListPost from "@/components/PostListPost";
 
 export default {
-  name: "PostCreate",
+  name: "AdminPostCreate",
   components: {
     // PostEditForm
     // PostListPost
@@ -140,6 +140,11 @@ export default {
       await this.$store.dispatch("createPost", {
         postPayload,
         imagePayload
+      });
+      await this.$store.dispatch("setSnackbar", {
+        color: "accent lighten-1",
+        text:
+          "You have successfully created a new post, now wait to be approved."
       });
       await this.$router.push({ name: "Home" });
     }

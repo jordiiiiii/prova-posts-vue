@@ -3,7 +3,7 @@
     width="340px"
     hover
     class="ma-2"
-    :to="{ name: 'post-single', params: { id: post.id } }"
+    :to="{ name: 'post-view', params: { id: post.id } }"
   >
     <v-img :src="url + post.imageUrl" alt="post image" />
     <v-card-title>{{ post.title }}</v-card-title>
@@ -45,13 +45,15 @@ export default {
     };
   },
   computed: {
-    ...mapState(["readPosts"]),
+    ...mapState(["currentUser"]),
     ...mapGetters(["getTag"]),
     isRead() {
-      return this.readPosts.includes(this.post.id);
+      if (this.currentUser.readPostIds) {
+        return this.currentUser.readPostIds.includes(this.post.id);
+      } else {
+        return false;
+      }
     }
   }
 };
 </script>
-
-<style scoped lang="scss"></style>

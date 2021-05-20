@@ -39,24 +39,28 @@ export default {
   props: ["currentUser"],
   computed: {
     items() {
-      let items = [
-        {
-          title: "Admin",
-          icon: "mdi-lock-open",
-          route: { name: "admin-post-list" }
-        },
-        {
-          title: "Add Tag",
-          icon: "mdi-lock-open",
-          route: { name: "tag-create" }
-        }
-      ];
+      let items = [];
+      if (this.currentUser.admin) {
+        items = [
+          {
+            title: "Admin",
+            icon: "mdi-view-dashboard",
+            route: { name: "admin-post-list" }
+          },
+          {
+            title: "Add Tag",
+            icon: "mdi-bank-outline",
+            route: { name: "admin-tag-create" }
+          }
+        ];
+      }
       return items;
     }
   },
   methods: {
     onLogout() {
       this.$store.dispatch("logoutUser");
+      this.$router.push({ name: "Home" });
     }
   }
 };

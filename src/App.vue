@@ -36,6 +36,24 @@
     <v-main>
       <router-view />
     </v-main>
+
+    <v-snackbar
+      v-for="(snackbar, index) in snackbars.filter(s => s.showing)"
+      :key="index"
+      v-model="snackbar.showing"
+      :timeout="snackbar.timeout"
+      :color="snackbar.color"
+      :style="`bottom: ${index * 60 + 8}px`"
+    >
+      {{ snackbar.text }}
+      <template v-slot:action="{ attrs }">
+        <v-btn text icon v-bind="attrs" @click="snackbar.showing = false">
+          <v-icon dark>
+            mdi-close-circle
+          </v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -52,7 +70,7 @@ export default {
     //
   }),
   computed: {
-    ...mapState(["currentUser"])
+    ...mapState(["currentUser", "snackbars"])
   },
   mounted() {
     this.$store.dispatch("loadPosts");

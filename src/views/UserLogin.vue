@@ -1,7 +1,11 @@
 <template>
   <v-container>
-    <h1>Register</h1>
-    <UserAuthForm :submitForm="loginUser" :btnText="'Login'" />
+    <h1>Login</h1>
+    <UserAuthForm
+      :submitForm="loginUser"
+      :btnText="'Login'"
+      :changeRoute="changeRoute"
+    />
   </v-container>
 </template>
 
@@ -13,15 +17,30 @@ export default {
   components: {
     UserAuthForm
   },
+  data() {
+    return {
+      changeRoute: {
+        optRoute: "user-registration",
+        msgOptRoute: "Don't have an account? Register."
+      }
+    };
+  },
   methods: {
+    // TODO: podria ser un try/cacth?!
     async loginUser(loginInfo) {
-      let email = loginInfo.email;
-      let password = loginInfo.password;
-      let user = await this.$store.dispatch("loginUser", { email, password });
-      if (user.error) {
-        alert(user.error.email + user.error.password);
-      } else {
-        alert("Thanks for signing in " + user.email);
+      let user = await this.$store.dispatch("loginUser", {
+        email: loginInfo.email,
+        password: loginInfo.password
+      });
+      if (!user.error) {
+        await this.$store.dispatch("setSnackbar", {
+          text: "Thanks for signing in " + user.email
+        });
+        if (user.admin) {
+          await this.$router.push({ name: "admin-post-list" });
+        } else {
+          await this.$router.push({ name: "Home" });
+        }
       }
     }
   }

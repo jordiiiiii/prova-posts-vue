@@ -1,10 +1,8 @@
 <template>
   <v-container>
     <div v-for="user in users" :key="user.id">
-      {{ user.userName }}
+      {{ user.name }}
       <v-btn x-small @click="loginUser(user)">Login</v-btn>
-      {{ user.email }}
-      {{ user.readPostIds }}
     </div>
   </v-container>
 </template>
@@ -13,7 +11,7 @@
 import { mapState } from "vuex";
 
 export default {
-  name: "AdminUserList",
+  name: "Xproves",
   computed: {
     ...mapState(["users"])
   },

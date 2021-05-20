@@ -1,16 +1,23 @@
 <template>
-  <v-container class="PostSingle">
+  <v-container class="PostView">
     <v-row>
       <v-col md="6" cols="12">
         <img :src="url + post.imageUrl" alt="post image" />
       </v-col>
       <v-col md="6" cols="12">
         <h1 class="display-1 mb-4">{{ post.title }}</h1>
+
         <div v-if="isRead" class="success--text">Read</div>
         <div v-else>
-          <v-btn text color="warning" x-small @click="markRead"
-            >Mark Read</v-btn
+          <v-btn
+            v-if="currentUser.email"
+            text
+            color="warning"
+            x-small
+            @click="markRead"
           >
+            Mark Read
+          </v-btn>
         </div>
         <span v-for="tag_id in post.tag_ids" :key="tag_id">
           <v-btn
@@ -34,20 +41,24 @@
 import { mapState, mapGetters } from "vuex";
 
 export default {
-  name: "PostSingle",
+  name: "PostView",
   data() {
     return {
       url: process.env.VUE_APP_ROOT_API
     };
   },
   computed: {
-    ...mapState(["readPosts", "posts"]),
+    ...mapState(["currentUser", "posts"]),
     ...mapGetters(["getTag"]),
     post() {
       return this.posts.find(p => p.id === this.$route.params.id) || {};
     },
     isRead() {
-      return this.readPosts.includes(this.post.id);
+      if (this.currentUser.readPostIds) {
+        return this.currentUser.readPostIds.includes(this.post.id);
+      } else {
+        return false;
+      }
     }
   },
   methods: {
