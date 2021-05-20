@@ -56,6 +56,11 @@ const routes = [
         params: true
       },
       {
+        path: "tags",
+        name: "admin-tag-list",
+        component: () => import("@/views/AdminTagList")
+      },
+      {
         path: "tag/new",
         name: "admin-tag-create",
         component: () => import("@/views/AdminTagCreate")

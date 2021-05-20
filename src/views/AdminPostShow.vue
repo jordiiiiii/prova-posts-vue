@@ -3,7 +3,7 @@
     <div class="display-1 pt-3">{{ post.title }}</div>
     <div>{{ post.snippet }}</div>
 
-    <v-autocomplete
+    <v-combobox
       :items="tags"
       item-text="name"
       v-model="postTags"
@@ -12,7 +12,7 @@
       deletable-chips
       hide-selected
       return-object
-    ></v-autocomplete>
+    ></v-combobox>
   </v-container>
 </template>
 
@@ -22,6 +22,9 @@ import _ from "lodash";
 
 export default {
   name: "AdminPostShow",
+  mounted() {
+    console.log(this.tags);
+  },
   computed: {
     ...mapState(["posts", "tags"]),
     ...mapGetters(["getTag"]),
@@ -32,21 +35,34 @@ export default {
       get() {
         return this.post.tag_ids.map(id => this.getTag(id));
       },
-      set(newTags) {
-        let addedTags = _.differenceBy(newTags, this.postTags, "id");
-        let removedTags = _.differenceBy(this.postTags, newTags, "id");
-        console.log(addedTags);
-        if (addedTags.length > 0) {
-          this.$store.dispatch("addTagFromPost", {
-            post: this.post,
-            tag: addedTags[0]
+      async set(newTags) {
+        let createdTag = newTags.find(t => typeof t === "string");
+        if (createdTag) {
+          console.log(createdTag);
+          createdTag = await this.$store.dispatch("createTag", {
+            name: createdTag
           });
-        }
-        if (removedTags.length > 0) {
-          this.$store.dispatch("removeTagFromPost", {
+          console.log(createdTag);
+          await this.$store.dispatch("addTagFromPost", {
             post: this.post,
-            tag: removedTags[0]
+            tag: createdTag
           });
+        } else {
+          let addedTags = _.differenceBy(newTags, this.postTags, "id");
+          let removedTags = _.differenceBy(this.postTags, newTags, "id");
+          console.log(addedTags);
+          if (addedTags.length > 0) {
+            await this.$store.dispatch("addTagFromPost", {
+              post: this.post,
+              tag: addedTags[0]
+            });
+          }
+          if (removedTags.length > 0) {
+            await this.$store.dispatch("removeTagFromPost", {
+              post: this.post,
+              tag: removedTags[0]
+            });
+          }
         }
       }
     }

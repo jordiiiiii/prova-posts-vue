@@ -29,7 +29,7 @@ export default {
         {
           title: "Tags",
           icon: "mdi-bank-outline",
-          route: { name: "admin-tag-create" }
+          route: { name: "admin-tag-list" }
         },
         {
           title: "Users",

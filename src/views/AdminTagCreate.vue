@@ -22,10 +22,10 @@ export default {
     };
   },
   methods: {
-    createTag() {
+    async createTag() {
       // let post = await this.$store.dispatch("createPost", this.post);
       // this.$router.push({ name: "post-view", params: { id: post.id } });
-      this.$store.dispatch("createTag", this.tag);
+      await this.$store.dispatch("createTag", this.tag);
     }
   }
 };

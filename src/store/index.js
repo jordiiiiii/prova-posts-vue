@@ -48,7 +48,7 @@ export default new Vuex.Store({
       // state.posts = posts;
       state.posts = state.posts.concat(post);
     },
-    ADD_TAG(state, tag) {
+    ADD_TAG(state, { tag }) {
       state.tags = state.tags.concat(tag);
     },
     DELETE_POST(state, postId) {
@@ -86,6 +86,13 @@ export default new Vuex.Store({
     REMOVE_TAG_FROM_POST(state, { post, tag }) {
       post.tag_ids = post.tag_ids.filter(t_id => t_id !== tag.id);
       tag.post_ids = tag.post_ids.filter(p_id => p_id !== post.id);
+    },
+    UPDATE_TAG_NAME(state, { tag }) {
+      let tagToUpdate = state.tags.find(t => t.id === tag.id);
+      tagToUpdate.name = tag.name;
+    },
+    DELETE_TAG(state, { tag }) {
+      state.tags = state.tags.filter(t => t.id !== tag.id);
     }
   },
   actions: {
@@ -165,8 +172,10 @@ export default new Vuex.Store({
     async createTag({ commit }, tag) {
       try {
         const response = await Api().post("tags", tag);
-        console.log(response);
-        commit("ADD_TAG", tag);
+        let newTag = response.data.data.attributes;
+        newTag["post_ids"] = [];
+        commit("ADD_TAG", { tag: newTag });
+        return newTag;
       } catch (err) {
         console.log(err.response.data.error);
       }
@@ -275,6 +284,26 @@ export default new Vuex.Store({
         let newPost = response.data.data.attributes;
         console.log(newPost);
         commit("REMOVE_TAG_FROM_POST", { post, tag });
+      } catch (err) {
+        console.log(err.response.data.error);
+      }
+    },
+    async updateTagName({ commit }, { tag }) {
+      try {
+        const response = await Api().patch(`tags/${tag.id}`, {
+          name: tag.name
+        });
+        console.log(response);
+        commit("UPDATE_TAG_NAME", { tag });
+      } catch (err) {
+        console.log(err.response.data.error);
+      }
+    },
+    async deleteTag({ commit }, { tag }) {
+      try {
+        const response = await Api().delete(`tags/${tag.id}`);
+        console.log(response);
+        commit("DELETE_TAG", { tag });
       } catch (err) {
         console.log(err.response.data.error);
       }

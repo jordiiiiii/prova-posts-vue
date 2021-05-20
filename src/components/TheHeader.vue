@@ -46,12 +46,12 @@ export default {
             title: "Admin",
             icon: "mdi-view-dashboard",
             route: { name: "admin-post-list" }
-          },
-          {
-            title: "Add Tag",
-            icon: "mdi-bank-outline",
-            route: { name: "admin-tag-create" }
           }
+          // {
+          //   title: "Add Tag",
+          //   icon: "mdi-bank-outline",
+          //   route: { name: "admin-tag-create" }
+          // }
         ];
       }
       return items;
