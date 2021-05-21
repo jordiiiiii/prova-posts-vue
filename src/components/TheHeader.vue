@@ -3,7 +3,7 @@
   <v-app-bar app color="" dark>
     <v-toolbar-title>
       <router-link :to="{ name: 'Home' }" class="text-uppercase grey--text">
-        <span class="font-weight-light">Grail</span>
+        <span class="font-weight-light">{{ title }}</span>
         <span>CyberTech</span>
       </router-link>
     </v-toolbar-title>
@@ -37,6 +37,11 @@
 export default {
   name: "TheHeader",
   props: ["currentUser"],
+  data() {
+    return {
+      title: process.env.VUE_APP_TITLE
+    };
+  },
   computed: {
     items() {
       let items = [];
